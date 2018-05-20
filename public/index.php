@@ -1,16 +1,23 @@
 <?php
 
-define('ROOT_DIR', __DIR__.'/..');
+define('ROOT_PATH',realpath('../'));
+define('FRAMEWORK_PATH', ROOT_PATH . '/Framework');
+define('APP_PATH', ROOT_PATH . '/App');
+define('CONFIG_PATH', ROOT_PATH . '/Config');
 
-require '../framework/Autoloader.php';
+define('DEBUG',true);
 
-May\Framework\Autoloader::init();
+if(DEBUG){
+	ini_set('display_error','on');
+}else{
+	ini_set('display_error','off');
+}
 
-$controllerName = isset($_GET['c']) ? $_GET['c'] : 'index';
-$actionName = isset($_GET['a']) ? $_GET['a'] : 'index';
+require FRAMEWORK_PATH . '/Common/functions.php';
 
-$ucController = ucfirst($controllerName);
-$controllerName = 'controllers\\' . $ucController . 'Controller';
-$controller = new $controllerName();
+require FRAMEWORK_PATH . '/May.php';
 
-return call_user_func_array([$controller, 'action' . ucfirst($actionName)],[]);
+spl_autoload_register('Framework\May::autoload');
+
+\Framework\May::run();
+
